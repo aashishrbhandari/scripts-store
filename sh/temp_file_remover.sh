@@ -1,0 +1,46 @@
+SAFESQUID_NATIVE_LOG_DIR="/var/log/safesquid/native/";
+SAFESQUID_NATIVE_FILES_LIMIT=10
+
+SAFESQUID_DB_REPORTS_DIR="/var/db/safesquid/report/";
+SAFESQUID_DB_REPORTS_TEMP_FILE_PATTERN="\-main.db$";
+
+# Remove All Temp Database Files
+REMOVE_SAFESQUID_REPORTS_TEMP_FILE() {
+	TEMP_FILE_ARRAY=$(ls ${SAFESQUID_DB_REPORTS_DIR} | grep  ${SAFESQUID_DB_REPORTS_TEMP_FILE_PATTERN});
+	for ONE_TEMP_FILE in ${TEMP_FILE_ARRAY};
+	do
+		rm -rfv ${SAFESQUID_DB_REPORTS_DIR}/${ONE_TEMP_FILE};
+	done;
+}
+
+# Remove all Native Logs Except Recent Last 10 Files which will include current (linked) log file and other few log files
+REMOVE_SAFESQUID_OLD_NATIVE_FILE() {
+	SAFESQUID_NATIVE_LOG_FILES=( $(ls -rth ${SAFESQUID_NATIVE_LOG_DIR}) );
+	SAFESQUID_NATIVE_LOG_FILES_COUNT=${#SAFESQUID_NATIVE_LOG_FILES[@]}
+	
+	## Check for Less than SAFESQUID_NATIVE_FILES_LIMIT + 1 Limit
+	SAFESQUID_NATIVE_FILES_LIMIT_PLUS_ONE=$(( SAFESQUID_NATIVE_FILES_LIMIT + 1 ))
+	
+	if [[ $SAFESQUID_NATIVE_LOG_FILES_COUNT -lt ${SAFESQUID_NATIVE_FILES_LIMIT_PLUS_ONE} ]];
+	then
+		echo "Natives File are Less than 10, Do Not Process Delete, [SAFESQUID_NATIVE_LOG_FILES_COUNT: ${SAFESQUID_NATIVE_LOG_FILES_COUNT}]";
+		return 0;
+	else
+		echo "Natives File are greater than 10, Do Process Delete, [SAFESQUID_NATIVE_LOG_FILES_COUNT: ${SAFESQUID_NATIVE_LOG_FILES_COUNT}]";
+		#COUNTER=$(echo ${#SAFESQUID_NATIVE_LOG_FILES[@]} - ${SAFESQUID_NATIVE_FILES_LIMIT} | bc) ## With Using "bc"
+		COUNTER=$(( ${#SAFESQUID_NATIVE_LOG_FILES[@]} - ${SAFESQUID_NATIVE_FILES_LIMIT} )) ## Without "bc"
+		SAFESQUID_NATIVE_FILES_TO_DELETE=( ${SAFESQUID_NATIVE_LOG_FILES[@]:0:$COUNTER} );
+		echo ${SAFESQUID_NATIVE_FILES_TO_DELETE[@]} | tr " " "\n"
+		echo "Counter: ${COUNTER}"
+		echo "Count of New Array List to delete:  ${#SAFESQUID_NATIVE_FILES_TO_DELETE[@]}"
+		echo "Removing Files:"		
+		for ONE_NATIVE_FILE in  ${SAFESQUID_NATIVE_FILES_TO_DELETE[@]};
+    	do
+	        rm -rfv ${SAFESQUID_NATIVE_LOG_DIR}/${ONE_NATIVE_FILE};
+	    done;
+
+	fi;
+}
+
+REMOVE_SAFESQUID_OLD_NATIVE_FILE;
+REMOVE_SAFESQUID_REPORTS_TEMP_FILE;
