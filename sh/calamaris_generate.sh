@@ -138,7 +138,7 @@ CALAMARIS_CMD_GENERATOR() {
 	CALAMARIS_CMD+=("--requester-report-with-targets 10");
 	CALAMARIS_CMD+=("--size-distribution-report 2");
 	CALAMARIS_CMD+=("--requester-report-use-user-info");
-	CALAMARIS_CMD+=("--output-file ${OUTPUT_FILE_NAME}");
+	CALAMARIS_CMD+=("--output-file ${OUTPUT_FILE_NAME}_$(hostname)");
 	CALAMARIS_CMD+=("--output-path ${OUTPUT_DIR}");
 	
 	echo ${CALAMARIS_CMD[@]}
