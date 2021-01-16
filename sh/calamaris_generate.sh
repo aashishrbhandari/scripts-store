@@ -138,7 +138,7 @@ CALAMARIS_CMD_GENERATOR() {
 	CALAMARIS_CMD+=("--requester-report-with-targets 10");
 	CALAMARIS_CMD+=("--size-distribution-report 2");
 	CALAMARIS_CMD+=("--requester-report-use-user-info");
-	CALAMARIS_CMD+=("--output-file ${OUTPUT_FILE_NAME}_$(hostname)");
+	CALAMARIS_CMD+=("--output-file ${OUTPUT_FILE_NAME}");
 	CALAMARIS_CMD+=("--output-path ${OUTPUT_DIR}");
 	
 	echo ${CALAMARIS_CMD[@]}
@@ -146,7 +146,7 @@ CALAMARIS_CMD_GENERATOR() {
 }
 
 GENERATE_CALAMARIS_REPORT() {
-	CALAMARIS_CMD_GENERATOR ${CREATED_ACCESS_LOG_FILE} "${STANDARD_LOG_FILE_FORMAT}_calamaris.html" ${CALAMARIS_REPORTS_DIR};
+	CALAMARIS_CMD_GENERATOR ${CREATED_ACCESS_LOG_FILE} "${STANDARD_LOG_FILE_FORMAT}_$(hostname)_Calamaris.html" ${CALAMARIS_REPORTS_DIR};
 }
 
 MAIN() {
