@@ -108,6 +108,14 @@ GENERATE_ACCESS_LOG() {
 	## Empty the Extended Log FIle [If it already contain some data]
 	echo "" > ${CREATED_EXTENDED_LOG_FILE};
 	
+	EXTENDED_LOG_CURR_FILE_PATH=$(readlink -f extended.log);
+	EXTENDED_LOG_CURR_FILE=$(basename ${EXTENDED_LOG_CURR_FILE_PATH});
+
+	if [[ ! "${ALL_EXTENDED_LOG_FILES[@]}" ~= ${EXTENDED_LOG_CURR_FILE} ]]
+	then
+		ALL_EXTENDED_LOG_FILES+=(${EXTENDED_LOG_CURR_FILE});
+	fi
+	
 	for ONE_LOG_FILE in ${ALL_EXTENDED_LOG_FILES[@]};
 	do
 		grep -a ${DATE_FORMAT_INSIDE_SAFESQUID_EXTENDED_LOG} ${EXTENDED_LOG_DIR}/${ONE_LOG_FILE} >> ${CREATED_EXTENDED_LOG_FILE} ;
