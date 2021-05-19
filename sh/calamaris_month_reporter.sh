@@ -70,6 +70,10 @@ else
     echo "Appending Logs to Same File"
 
     zgrep -iEa "${LAST_MONTH}/${LAST_MONTH_YEAR}" ${OUR_TEMP_DIR}/* >> ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-extended.log
+
+    echo "Step 2(C): Removing Temp Dir: ${OUR_TEMP_DIR} Which Holds all the Remote Conn Log Files To Save Space Before Generating Access Log";
+    rm -rfv ${OUR_TEMP_DIR}/*
+    
 fi
 
 echo "Step 3: Convert Extended To Access Log";
