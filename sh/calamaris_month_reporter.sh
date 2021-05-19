@@ -36,7 +36,7 @@ echo "Step 2: Find Logs Files of This TimeStamp";
 FOR_MONTH="${LAST_MONTH}-${LAST_MONTH_YEAR}"
 echo "TimeStamp: ${FOR_MONTH}";
 
-LOG_FILES_SYS_1=($(find /var/log/safesquid/extended/ -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") )
+LOG_FILES_SYS_1=($(find /var/log/safesquid/extended/ -type f -regex '.*[0-9+]-extended.log.*' -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") )
 
 echo "All Log Files For SYS 1:";
 ls -lrth ${LOG_FILES_SYS_1[@]}
@@ -51,10 +51,10 @@ then
 else
     echo "Step 2(B): Extract Logs From Remote Server(SSH) & Append it to the Same File";
 
-    time LOG_FILES_SYS_2=($(ssh root@127.0.0.1 'FOR_MONTH=$(date +"%b-%Y" -d "last month") ; LOG_FILES_SYS=($(find /var/log/safesquid/extended/ -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") ); echo ${LOG_FILES_SYS[@]}'))
+    time LOG_FILES_SYS_2=($(ssh ${REMOTE_CONN} 'FOR_MONTH=$(date +"%b-%Y" -d "last month") ; LOG_FILES_SYS=($(find /var/log/safesquid/extended/ -type f -regex '.*[0-9+]-extended.log.*' -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") ); echo ${LOG_FILES_SYS[@]}'))
 
     echo "All Log Files For SYS 2: (Yet To be Downloaded are:)";
-    echo ${LOG_FILES_SYS_1[@]};
+    echo ${LOG_FILES_SYS_2[@]};
 
 
     for ONE_LOG_FILE in ${LOG_FILES_SYS_2[@]};
