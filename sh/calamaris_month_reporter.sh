@@ -88,7 +88,7 @@ time apt install calamaris
 
 echo "Generating Calamaris Report:"
 
-time cat ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-access.log | /usr/bin/calamaris -F html --domain-report 50 --performance-report 60  --requester-report 20 --status-report --type-report 20 --response-time-report --errorcode-distribution-report --domain-report-limit 3 --domain-report-n-level 10 --requester-report-with-targets 10 --size-distribution-report 2  --requester-report-use-user-info --output-file ${PROCESSING_DIR}/CalamarisReport-${LAST_MONTH}-${LAST_MONTH_YEAR}-Full.html
+time cat ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-access.log | /usr/bin/calamaris -F html --domain-report 50 --performance-report 60  --requester-report 20 --status-report --type-report 20 --response-time-report --errorcode-distribution-report --domain-report-limit 3 --domain-report-n-level 10 --requester-report-with-targets 10 --size-distribution-report 2  --requester-report-use-user-info --output-file CalamarisReport-${LAST_MONTH}-${LAST_MONTH_YEAR}-Full.html --output-path ${PROCESSING_DIR}
 
 cp ${PROCESSING_DIR}/CalamarisReport-${LAST_MONTH}-${LAST_MONTH_YEAR}-Full.html ${COPY_TO}/
 
