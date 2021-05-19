@@ -45,27 +45,32 @@ echo "Step 2(A): Extract Logs & Insert it to One File";
 
 zgrep -iEa "${LAST_MONTH}/${LAST_MONTH_YEAR}" ${LOG_FILES_SYS_1[@]} > ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-extended.log
 
-echo "Step 2(B): Extract Logs From Remote Server(SSH) & Append it to the Same File";
+if [[ $REMOTE_CONN == "" ]];
+then
+    echo "Step 2(B): Omitted Since No Remote Conn To Extract Logs";
+else
+    echo "Step 2(B): Extract Logs From Remote Server(SSH) & Append it to the Same File";
 
-time LOG_FILES_SYS_2=($(ssh root@127.0.0.1 'FOR_MONTH=$(date +"%b-%Y" -d "last month") ; LOG_FILES_SYS=($(find /var/log/safesquid/extended/ -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") ); echo ${LOG_FILES_SYS[@]}'))
+    time LOG_FILES_SYS_2=($(ssh root@127.0.0.1 'FOR_MONTH=$(date +"%b-%Y" -d "last month") ; LOG_FILES_SYS=($(find /var/log/safesquid/extended/ -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") ); echo ${LOG_FILES_SYS[@]}'))
 
-echo "All Log Files For SYS 2: (Yet To be Downloaded are:)";
-echo ${LOG_FILES_SYS_1[@]};
+    echo "All Log Files For SYS 2: (Yet To be Downloaded are:)";
+    echo ${LOG_FILES_SYS_1[@]};
 
 
-for ONE_LOG_FILE in ${LOG_FILES_SYS_2[@]};
-do
-    echo "Downloading File: ${ONE_LOG_FILE} from ${REMOTE_CONN} & Adding to Dir: $OUR_TEMP_DIR";
-    time scp ${REMOTE_CONN}:${ONE_LOG_FILE} ${OUR_TEMP_DIR}/ ;
-done
+    for ONE_LOG_FILE in ${LOG_FILES_SYS_2[@]};
+    do
+        echo "Downloading File: ${ONE_LOG_FILE} from ${REMOTE_CONN} & Adding to Dir: $OUR_TEMP_DIR";
+        time scp ${REMOTE_CONN}:${ONE_LOG_FILE} ${OUR_TEMP_DIR}/ ;
+    done
 
-echo "All LOG_FILES_SYS_2 Files:";
+    echo "All LOG_FILES_SYS_2 Files:";
 
-ls -lrth ${OUR_TEMP_DIR};
+    ls -lrth ${OUR_TEMP_DIR};
 
-echo "Appending Logs to Same File"
+    echo "Appending Logs to Same File"
 
-zgrep -iEa "${LAST_MONTH}/${LAST_MONTH_YEAR}" ${OUR_TEMP_DIR}/* >> ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-extended.log
+    zgrep -iEa "${LAST_MONTH}/${LAST_MONTH_YEAR}" ${OUR_TEMP_DIR}/* >> ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-extended.log
+fi
 
 echo "Step 3: Convert Extended To Access Log";
 echo "Make Sure extended_log_to_access file is Present and In Path & Executable Permission.."
