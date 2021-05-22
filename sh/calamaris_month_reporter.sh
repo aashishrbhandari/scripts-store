@@ -38,6 +38,12 @@ echo "TimeStamp: ${FOR_MONTH}";
 
 LOG_FILES_SYS_1=($(find /var/log/safesquid/extended/ -type f -regex '.*[0-9+]-extended.log.*' -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") )
 
+echo "Get a Log File Which is Ahead in Time To Get Logs Captured in New Dated File";
+LOG_FILE_AHEAD_IN_TIME=$(ls -rt `find /var/log/safesquid/extended/ -newermt "01-$FOR_MONTH +1 month" -type f` | head -n 1)
+
+echo "Add it To the LOG_FILES_SYS_1";
+LOG_FILES_SYS_1+=($LOG_FILE_AHEAD_IN_TIME)
+
 echo "All Log Files For SYS 1:";
 ls -lrth ${LOG_FILES_SYS_1[@]}
 
@@ -51,11 +57,10 @@ then
 else
     echo "Step 2(B): Extract Logs From Remote Server(SSH) & Append it to the Same File";
 
-    time LOG_FILES_SYS_2=($(ssh ${REMOTE_CONN} 'FOR_MONTH=$(date +"%b-%Y" -d "last month") ; LOG_FILES_SYS=($(find /var/log/safesquid/extended/ -type f -regex '.*[0-9+]-extended.log.*' -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") ); echo ${LOG_FILES_SYS[@]}'))
+    time LOG_FILES_SYS_2=($(ssh root@127.0.0.1 'FOR_MONTH=$(date +"%b-%Y" -d "last month") ; LOG_FILES_SYS=($(find /var/log/safesquid/extended/ -newermt "01-$FOR_MONTH -1 sec" -and -not -newermt "01-$FOR_MONTH +1 month -1 sec") ); LOG_FILE_AHEAD_IN_TIME=$(ls -rt `find /var/log/safesquid/extended/ -newermt "01-$FOR_MONTH +1 month" -type f` | head -n 1); LOG_FILES_SYS+=($LOG_FILE_AHEAD_IN_TIME); echo ${LOG_FILES_SYS[@]}'))
 
     echo "All Log Files For SYS 2: (Yet To be Downloaded are:)";
     echo ${LOG_FILES_SYS_2[@]};
-
 
     for ONE_LOG_FILE in ${LOG_FILES_SYS_2[@]};
     do
@@ -92,7 +97,11 @@ time apt install calamaris
 
 echo "Generating Calamaris Report:"
 
-time cat ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-access.log | /usr/bin/calamaris -F html --domain-report 50 --performance-report 60  --requester-report 20 --status-report --type-report 20 --response-time-report --errorcode-distribution-report --domain-report-limit 3 --domain-report-n-level 10 --requester-report-with-targets 10 --size-distribution-report 2  --requester-report-use-user-info --output-file CalamarisReport-${LAST_MONTH}-${LAST_MONTH_YEAR}-Full.html --output-path ${PROCESSING_DIR}
+# More Detailed Report
+#time cat ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-access.log | /usr/bin/calamaris -F html --domain-report 50 --performance-report 60  --requester-report 20 --status-report --type-report 20 --response-time-report --errorcode-distribution-report --domain-report-limit 3 --domain-report-n-level 10 --requester-report-with-targets 10 --size-distribution-report 2  --requester-report-use-user-info --output-file CalamarisReport-${LAST_MONTH}-${LAST_MONTH_YEAR}-Full.html --output-path ${PROCESSING_DIR}
+
+# Client Specific Report
+time cat ${OUR_LOG_DIR}/${LAST_MONTH}-${LAST_MONTH_YEAR}-Full-access.log | /usr/bin/calamaris --config-file /etc/calamaris/calamaris.conf -F html --domain-report 20 --performance-report 60 --requester-report 20 --type-report 20 --response-time-report --requester-report-with-targets 20 --domain-report-n-level 4 --output-file CalamarisReport-${LAST_MONTH}-${LAST_MONTH_YEAR}-Full.html --output-path ${PROCESSING_DIR}
 
 cp ${PROCESSING_DIR}/CalamarisReport-${LAST_MONTH}-${LAST_MONTH_YEAR}-Full.html ${COPY_TO}/
 
@@ -102,3 +111,8 @@ echo "Removing Contents of ${OUR_LOG_DIR} & ${OUR_TEMP_DIR}";
 rm -rfv ${OUR_LOG_DIR}/*
 rm -rfv ${OUR_TEMP_DIR}/*
 
+###########
+## Cron 
+## Monthly Log Reporting
+###########
+#  0 1 1 * *    root /bin/bash /usr/local/src/scripts/sh/calamaris_month_reporter.sh &>> /var/log/safesquid/script_logs/calamaris_month_reporter.sh.log
