@@ -87,3 +87,9 @@ subjectAltName = DNS:rootca-intermediateca-signed-servercert.com, DNS:*.rootca-i
 -out test_server_cert.pem \
 -sha256
 
+
+
+## Verify
+echo "--------------Verify--------------"
+echo "Should be The OutPut: test_server_cert.pem: OK"
+openssl verify -CAfile test_ca_cert.pem -untrusted test_intermediateca_cert.pem test_server_cert.pem

@@ -9,6 +9,14 @@ Script Requirement:
     :- Pandas
     :- openpyxl
 
+Simple Installation
+====================
+
+wget https://raw.githubusercontent.com/Asharry97/scripts-store/master/py/category_to_excel_v4.py
+python2 --version # Should be 2.7.**
+apt install python-pip # pip is Not Default Found Therefore Download It.
+pip2 install openpyxl pandas # Make sure to use pip2 & download openpyxl & pandas
+
 Tech End:
 ============
 
