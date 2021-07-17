@@ -69,7 +69,9 @@ def build_category_data(category_db_result_set):
             if one_category_name != '':
                 if one_category_name in category_list.keys():
                     # Append to Website List of Category Already Identified & Added in JSON (Object)
-                    category_list.get(one_category_name).append(website_name)
+                    if website_name not in category_list.get(one_category_name):
+                        category_list.get(
+                            one_category_name).append(website_name)
                 else:
                     # Create New WebCategory & Add New Website in the Website List in JSON (Object)
                     category_list[one_category_name] = [website_name]
