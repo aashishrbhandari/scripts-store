@@ -114,10 +114,9 @@ def main():
     category_db_result_set = get_category_database_set()
     category_list = build_category_data(category_db_result_set)
 
+    print("Category List from Sqlite DB")
     pprint(category_list)
     create_category_files(category_list)
-
-    print("Test All File Upload")
 
     if len(sys.argv) > 1:
         proxy_set = sys.argv[1]
