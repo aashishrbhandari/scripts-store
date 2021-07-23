@@ -4,8 +4,30 @@ import os
 import sys
 
 """
-External Libs to Be Downloaded
+### For Py3 [Packages Required: pandas requests ]
+
+apt-get install python-pip3
 pip3 install pandas requests
+
+### For Py2 [Packages Required: pandas requests]
+
+apt-get install python-pip
+pip2 install pandas requests
+
+### After Above Commands
+### You can Just Run
+
+# It will create a Dir: category_files on same location with Files Named a Category Name and Content as List of Websites in that Category
+python3 category_migrator.py 
+python2 category_migrator.py # For Py2 Users
+
+# When Providing New Proxy (Where you want to Upload these Categories) ProxyIP:Port
+python3 category_migrator.py "192.168.1.253:8080"
+python2 category_migrator.py "192.168.1.253:8080" # For Py2 Users
+
+# it will start uploading it to the respective Proxy
+
+# Make sure you have the First Rule, Because inorder to Upload i have to use this group so that Any Authentication does not concern us
 """
 
 import pandas as pd
@@ -100,7 +122,7 @@ def create_category_files(category_list):
     try:
         os.mkdir(DIR)
     except Exception as except_me:
-        print(f"Dir Present: [{str(except_me)}]")
+        print("Dir Present: ", except_me)
         return False
     for category_name, category_website_list in category_list.items():
         with open(os.path.join(DIR, category_name + ".txt"), "w") as outfile:
