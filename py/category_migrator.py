@@ -7,12 +7,12 @@ import sys
 ### For Py3 [Packages Required: pandas requests ]
 
 apt-get install python-pip3
-pip3 install pandas requests
+pip3 install requests
 
 ### For Py2 [Packages Required: pandas requests]
 
 apt-get install python-pip
-pip2 install pandas requests
+pip2 install requests
 
 ### After Above Commands
 ### You can Just Run
@@ -30,7 +30,6 @@ python2 category_migrator.py "192.168.1.253:8080" # For Py2 Users
 # Make sure you have the First Rule, Because inorder to Upload i have to use this group so that Any Authentication does not concern us
 """
 
-import pandas as pd
 import requests
 
 DIR = "category_files"
