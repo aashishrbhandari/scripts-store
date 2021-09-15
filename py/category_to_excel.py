@@ -131,7 +131,7 @@ def main():
     print(usage_desc)
 
     category_db_file = None
-    if sys.argv > 1:
+    if len(sys.argv) > 1:
         category_db_file = os.path.abspath(sys.argv[1])
         print("(File as Arg Provided) Using Category DB File: ", category_db_file)
     else:
