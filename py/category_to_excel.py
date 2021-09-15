@@ -2,7 +2,7 @@ import os
 import sys
 import pandas as pd
 import sqlite3
-usage_desc = """
+usage_desc = '''
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 Script Desc
 ============
@@ -40,8 +40,13 @@ Step 3: Run the Script
 
     Python2:
     --------
-    python2 category_to_excel.py # This will use the category.db from the system location
+    python2 category_to_excel.py # This will use the category.db from the system location (DEFAULT: /var/lib/safesquid/category/category.db)
+    python2 category_to_excel.py category_loc2.db # You can provide category.db as File Argument if category.db copied from another location
 
+    Python3:
+    --------
+    python3 category_to_excel.py # This will use the category.db from the system location (DEFAULT: /var/lib/safesquid/category/category.db)
+    python3 category_to_excel.py category_loc2.db # You can provide category.db as File Argument if category.db copied from another location
 
 Short Explanation:
 ==================
@@ -63,7 +68,7 @@ Note: We Split it using "," and DO Not Process Any Empty Data
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-"""
+'''
 
 
 ''' Get Data from The Category SQLite DB '''
@@ -143,6 +148,8 @@ def main():
     category_db_result_set = get_category_database_set(category_db_file)
     category_list = build_category_data(category_db_result_set)
     generate_excel(category_list=category_list, category_sheet=category_sheet)
+    print("Created Excel Sheet: ", category_sheet, " @ Location: ", os.path.abspath(
+        category_sheet))
 
 
 main()
