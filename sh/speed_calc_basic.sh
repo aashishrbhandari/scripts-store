@@ -65,8 +65,8 @@ do
     SPEED_TX=$(echo $(( $NOW_TX_BYTES - ${NIC_DICT["${ONE_NIC}_TX"]} )) | bc);
     SPEED_RX_CALC=$(BYTES_TO_HR ${SPEED_RX})
     SPEED_TX_CALC=$(BYTES_TO_HR ${SPEED_TX})
-    TOTAL_SEND_CALC=$(cat /sys/class/net/${ONE_NIC}/statistics/tx_bytes);
-    TOTAL_RECV_CALC=$(cat /sys/class/net/${ONE_NIC}/statistics/rx_bytes);
+    TOTAL_SEND_CALC=$(BYTES_TO_HR ${NOW_TX_BYTES});
+    TOTAL_RECV_CALC=$(BYTES_TO_HR ${NOW_RX_BYTES});
 
     TOTAL_SPEED=$(( ${SPEED_RX} + ${SPEED_TX} ));
     TOTAL_SPEED_CALC=$(BYTES_TO_HR ${TOTAL_SPEED});
