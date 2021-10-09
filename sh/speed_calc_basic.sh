@@ -8,7 +8,7 @@
 #cat /sys/class/net/eth0/statistics/rx_bytes
 #cat /sys/class/net/eth0/statistics/tx_bytes
 
-function BYTES_TO_HR() {
+function BYTES_TO_HR_B() {
   local SIZE=$1
   local UNITS="B KB MB GB TB PB"
   for F in $UNITS; do
@@ -65,8 +65,8 @@ do
     SPEED_TX=$(echo $(( $NOW_TX_BYTES - ${NIC_DICT["${ONE_NIC}_TX"]} )) | bc);
     SPEED_RX_CALC=$(BYTES_TO_HR ${SPEED_RX})
     SPEED_TX_CALC=$(BYTES_TO_HR ${SPEED_TX})
-    TOTAL_SEND_CALC=$(BYTES_TO_HR ${NOW_TX_BYTES});
-    TOTAL_RECV_CALC=$(BYTES_TO_HR ${NOW_RX_BYTES});
+    TOTAL_SEND_CALC=$(BYTES_TO_HR_B ${NOW_TX_BYTES});
+    TOTAL_RECV_CALC=$(BYTES_TO_HR_B ${NOW_RX_BYTES});
 
     TOTAL_SPEED=$(( ${SPEED_RX} + ${SPEED_TX} ));
     TOTAL_SPEED_CALC=$(BYTES_TO_HR ${TOTAL_SPEED});
